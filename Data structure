@@ -1,0 +1,91 @@
+//Linked list insert at any position
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* insertAtEnd(struct Node* head, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+        return head;
+    }
+
+    struct Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    return head;
+}
+
+struct Node* insertAfterPosition(struct Node* head, int position, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        printf("List is empty. Cannot insert after position.\n");
+        return head;
+    }
+
+    struct Node* temp = head;
+    for (int i = 1; i < position; i++) {
+        if (temp->next == NULL) {
+            printf("Position is out of bounds.\n");
+            return head;
+        }
+        temp = temp->next;
+    }
+
+    newNode->next = temp->next;
+    temp->next = newNode;
+
+    return head;
+}
+
+void printList(struct Node* head) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct Node* head = NULL;
+    int n, value, pos;
+
+    printf("How many nodes do you want to insert initially? ");
+    scanf("%d", &n);
+
+    for (int i = 1; i <= n; i++) {
+        printf("Enter value for node %d: ", i);
+        scanf("%d", &value);
+        head = insertAtEnd(head, value);  // fixed here
+    }
+
+    printf("\nCurrent Linked List: ");
+    printList(head);
+
+    printf("\nEnter position after which you want to insert a new node: ");
+    scanf("%d", &pos);
+    printf("Enter value for the new node: ");
+    scanf("%d", &value);
+
+    head = insertAfterPosition(head, pos, value);
+
+    printf("\nUpdated Linked List: ");
+    printList(head);
+
+    return 0;
+}
