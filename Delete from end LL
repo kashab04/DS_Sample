@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// লিস্টের শেষ নোড ডিলিট করার ফাংশন
+struct Node* deleteFromEnd(struct Node* head) {
+    if (head == NULL) {
+        printf("List is empty. Cannot delete.\n");
+        return head;
+    }
+
+    // যদি লিস্টে শুধু একটা নোড থাকে
+    if (head->next == NULL) {
+        free(head);
+        head = NULL;
+        printf("Last node deleted successfully.\n");
+        return head;
+    }
+
+    // দুই বা তার বেশি নোড থাকলে
+    struct Node* temp = head;
+    struct Node* prev = NULL;
+
+    // শেষ নোড পর্যন্ত যাওয়া
+    while (temp->next != NULL) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    prev->next = NULL; // দ্বিতীয় শেষ নোড এখন শেষ নোড
+    free(temp);        // পুরনো শেষ নোড free করলাম
+
+    printf("Last node deleted successfully.\n");
+    return head;
+}
+
+// লিস্ট প্রিন্ট করার ফাংশন
+void display(struct Node* head) {
+    struct Node* temp = head;
+    printf("Current List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n\n");
+}
+
+int main() {
+    struct Node* head = NULL;
+    struct Node* temp = NULL;
+    struct Node* newNode = NULL;
+    int n, value;
+
+    printf("How many nodes do you want to insert? ");
+    scanf("%d", &n);
+
+    for (int i = 1; i <= n; i++) {
+        printf("Enter value for node %d: ", i);
+        scanf("%d", &value);
+
+        newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode->data = value;
+        newNode->next = NULL;
+
+        if (head == NULL) {
+            head = newNode;
+            temp = newNode;
+        } else {
+            temp->next = newNode;
+            temp = newNode;
+        }
+    }
+
+    printf("\nList before deletion:\n");
+    display(head);
+
+    head = deleteFromEnd(head);
+
+    printf("List after deletion:\n");
+    display(head);
+
+    return 0;
+}
