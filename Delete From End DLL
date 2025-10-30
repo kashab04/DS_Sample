@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+// লিস্ট দেখানোর ফাংশন
+void display() {
+    struct Node* temp = head;
+    printf("\nDoubly Linked List: ");
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Delete From End
+void deleteFromEnd() {
+    if (head == NULL) {
+        printf("\nList is empty! Nothing to delete.\n");
+        return;
+    }
+
+    struct Node* temp = head;
+
+    // যদি লিস্টে মাত্র একটাই নোড থাকে
+    if (head->next == NULL) {
+        printf("\nDeleted node: %d\n", head->data);
+        free(head);
+        head = NULL;
+        return;
+    }
+
+    // শেষ নোড পর্যন্ত যাওয়া
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    // এখন temp হচ্ছে শেষ নোড
+    printf("\nDeleted node: %d\n", temp->data);
+
+    temp->prev->next = NULL; // আগের নোডের next কে NULL করলাম
+    free(temp);              // শেষ নোডের মেমরি মুক্ত করলাম
+}
+
+// মেইন ফাংশন
+int main() {
+    int n, val;
+    struct Node *temp, *newnode;
+
+    printf("How many nodes initially? ");
+    scanf("%d", &n);
+
+    // লিস্ট তৈরি
+    for (int i = 1; i <= n; i++) {
+        printf("Enter value for node %d: ", i);
+        scanf("%d", &val);
+
+        newnode = (struct Node*)malloc(sizeof(struct Node));
+        newnode->data = val;
+        newnode->prev = NULL;
+        newnode->next = NULL;
+
+        if (head == NULL) {
+            head = newnode;
+            temp = head;
+        } else {
+            temp->next = newnode;
+            newnode->prev = temp;
+            temp = newnode;
+        }
+    }
+
+    printf("\nOriginal List:\n");
+    display();
+
+    // Delete From End
+    deleteFromEnd();
+
+    printf("\nAfter Deleting Last Node:\n");
+    display();
+
+    return 0;
+}
