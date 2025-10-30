@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+// লিস্ট প্রিন্ট ফাংশন
+void display() {
+    struct Node* temp = head;
+    printf("\nDoubly Linked List: ");
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Insert After Position ফাংশন
+void insertAfterPosition(int pos, int value) {
+    struct Node* newnode = (struct Node*)malloc(sizeof(struct Node));
+    newnode->data = value;
+    newnode->prev = NULL;
+    newnode->next = NULL;
+
+    if (head == NULL) {
+        printf("List is empty!\n");
+        free(newnode);
+        return;
+    }
+
+    struct Node* temp = head;
+    int i = 1, count = 0;
+
+    // লিস্টের দৈর্ঘ্য গণনা
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+
+    // পজিশন যাচাই
+    if (pos < 1 || pos > count) {
+        printf("Invalid position!\n");
+        free(newnode);
+        return;
+    }
+
+    // নির্দিষ্ট পজিশন পর্যন্ত যাওয়া
+    temp = head;
+    i = 1;
+    while (i < pos && temp != NULL) {
+        temp = temp->next;
+        i++;
+    }
+
+    // নতুন নোড ইনসার্ট করা
+    newnode->next = temp->next;
+    newnode->prev = temp;
+
+    if (temp->next != NULL)
+        temp->next->prev = newnode;
+
+    temp->next = newnode;
+
+    printf("\n%d inserted after position %d\n", value, pos);
+}
+
+// মেইন ফাংশন
+int main() {
+    int n, val, pos;
+    struct Node *temp, *newnode;
+
+    printf("How many nodes initially? ");
+    scanf("%d", &n);
+
+    // লিস্ট তৈরি
+    for (int i = 1; i <= n; i++) {
+        printf("Enter value for node %d: ", i);
+        scanf("%d", &val);
+
+        newnode = (struct Node*)malloc(sizeof(struct Node));
+        newnode->data = val;
+        newnode->prev = NULL;
+        newnode->next = NULL;
+
+        if (head == NULL) {
+            head = newnode;
+            temp = head;
+        } else {
+            temp->next = newnode;
+            newnode->prev = temp;
+            temp = newnode;
+        }
+    }
+
+    printf("\nOriginal List:\n");
+    display();
+
+    printf("\nEnter position after which to insert: ");
+    scanf("%d", &pos);
+    printf("Enter value to insert: ");
+    scanf("%d", &val);
+
+    insertAfterPosition(pos, val);
+
+    printf("\nUpdated List:\n");
+    display();
+
+    return 0;
+}
