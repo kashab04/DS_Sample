@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *next;
+    struct node *prev;
+};
+
+struct node *head = NULL;
+
+void create() {
+    struct node *temp, *newnode;
+    int choice = 1;
+
+    while (choice) {
+        newnode = (struct node*)malloc(sizeof(struct node));
+
+        printf("Enter data: ");
+        scanf("%d", &newnode->data);
+
+        newnode->next = NULL;
+        newnode->prev = NULL;
+
+        if (head == NULL) {
+            head = temp = newnode;
+        } else {
+            temp->next = newnode;
+            newnode->prev = temp;
+            temp = newnode;
+        }
+
+        printf("Do you want to continue (0/1)? ");
+        scanf("%d", &choice);
+    }
+}
+
+void insertAtBeginning() {
+    struct node *newnode;
+    newnode = (struct node*)malloc(sizeof(struct node));
+
+    printf("\nEnter data to insert at beginning: ");
+    scanf("%d", &newnode->data);
+
+    newnode->prev = NULL;        // নতুন নোডের আগের কিছু থাকবে না
+    newnode->next = head;        // নতুন নোডের পরেরটা হবে পুরনো হেড
+
+    if (head != NULL) {          // যদি লিস্ট ফাঁকা না হয়
+        head->prev = newnode;    // পুরনো হেডের prev আপডেট করো
+    }
+
+    head = newnode;              // নতুন নোডকে head বানাও
+
+    printf("Node inserted at beginning successfully!\n");
+}
+
+void display() {
+    struct node *temp = head;
+
+    printf("\nDoubly Linked List:\n");
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    create();
+    printf("\nOriginal list:\n");
+    display();
+
+    insertAtBeginning();
+    printf("\nAfter inserting at beginning:\n");
+    display();
+
+    return 0;
+}
