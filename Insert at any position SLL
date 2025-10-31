@@ -1,5 +1,3 @@
-//Linked list insert at any position
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,39 +6,29 @@ struct Node {
     struct Node* next;
 };
 
-struct Node* insertAtEnd(struct Node* head, int value) {
+// নতুন নোড তৈরি করার ফাংশন
+struct Node* createNode(int value) {
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode->data = value;
     newNode->next = NULL;
+    return newNode;
+}
 
-    if (head == NULL) {
+// পজিশনে ইনসার্ট করা
+struct Node* insertAtPosition(struct Node* head, int position, int value) {
+    struct Node* newNode = createNode(value);
+
+    // যদি লিস্ট ফাঁকা হয় বা পজিশন 1 হয় (মানে শুরুতে ইনসার্ট)
+    if (position == 1 || head == NULL) {
+        newNode->next = head;
         head = newNode;
         return head;
     }
 
     struct Node* temp = head;
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-
-    temp->next = newNode;
-    return head;
-}
-
-struct Node* insertAfterPosition(struct Node* head, int position, int value) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = value;
-    newNode->next = NULL;
-
-    if (head == NULL) {
-        printf("List is empty. Cannot insert after position.\n");
-        return head;
-    }
-
-    struct Node* temp = head;
-    for (int i = 1; i < position; i++) {
-        if (temp->next == NULL) {
-            printf("Position is out of bounds.\n");
+    for (int i = 1; i < position - 1; i++) {
+        if (temp == NULL) {
+            printf("Position is out of range!\n");
             return head;
         }
         temp = temp->next;
@@ -52,6 +40,7 @@ struct Node* insertAfterPosition(struct Node* head, int position, int value) {
     return head;
 }
 
+// লিস্ট প্রিন্ট করা
 void printList(struct Node* head) {
     struct Node* temp = head;
     while (temp != NULL) {
@@ -68,21 +57,23 @@ int main() {
     printf("How many nodes do you want to insert initially? ");
     scanf("%d", &n);
 
+    // লিস্ট তৈরি করা
     for (int i = 1; i <= n; i++) {
         printf("Enter value for node %d: ", i);
         scanf("%d", &value);
-        head = insertAtEnd(head, value);  // fixed here
+        head = insertAtPosition(head, i, value);  // একটার পর একটা ইনসার্ট
     }
 
     printf("\nCurrent Linked List: ");
     printList(head);
 
-    printf("\nEnter position after which you want to insert a new node: ");
+    // নতুন নোড ইনসার্ট করা
+    printf("\nEnter position to insert a new node: ");
     scanf("%d", &pos);
     printf("Enter value for the new node: ");
     scanf("%d", &value);
 
-    head = insertAfterPosition(head, pos, value);
+    head = insertAtPosition(head, pos, value);
 
     printf("\nUpdated Linked List: ");
     printList(head);
