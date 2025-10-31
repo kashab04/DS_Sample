@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// নতুন নোড তৈরি করা
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// লিস্টের শেষে নোড যোগ করা (লিস্ট তৈরি করার জন্য)
+struct Node* insertAtEnd(struct Node* head, int value) {
+    struct Node* newNode = createNode(value);
+    if (head == NULL)
+        return newNode;
+
+    struct Node* temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+    return head;
+}
+
+// প্রদত্ত পজিশনের পরে নতুন নোড ইনসার্ট করা
+struct Node* insertAfterPosition(struct Node* head, int value, int pos) {
+    if (head == NULL) {
+        printf("List is empty!\n");
+        return head;
+    }
+
+    struct Node* temp = head;
+    for (int i = 1; i < pos && temp != NULL; i++) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Position out of range!\n");
+        return head;
+    }
+
+    struct Node* newNode = createNode(value);
+    newNode->next = temp->next;
+    temp->next = newNode;
+
+    return head;
+}
+
+// লিস্ট প্রিন্ট করা
+void display(struct Node* head) {
+    struct Node* temp = head;
+    printf("\nLinked List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// মূল ফাংশন
+int main() {
+    struct Node* head = NULL;
+    int n, val, pos;
+
+    printf("Enter number of nodes: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter value for node %d: ", i + 1);
+        scanf("%d", &val);
+        head = insertAtEnd(head, val);
+    }
+
+    display(head);
+
+    printf("\nEnter position after which to insert: ");
+    scanf("%d", &pos);
+
+    printf("Enter value to insert: ");
+    scanf("%d", &val);
+
+    head = insertAfterPosition(head, val, pos);
+
+    display(head);
+
+    return 0;
+}
