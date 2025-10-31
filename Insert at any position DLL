@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Doubly Linked List এর Node
+// Doubly Linked List-এর Node
 struct Node {
     int data;
     struct Node* next;
@@ -17,33 +17,23 @@ struct Node* createNode(int value) {
     return newNode;
 }
 
-// কোন position-এ insert করার ফাংশন
-void insertAtPosition(struct Node** head, int value, int position) {
+// পজিশনে Node insert করার ফাংশন
+struct Node* insertAtPosition(struct Node* head, int position, int value) {
     struct Node* newNode = createNode(value);
 
-    // যদি position 1 হয়, অর্থাৎ প্রথমে insert করতে হবে
-    if (position == 1) {
-        newNode->next = *head;
-        if (*head != NULL)
-            (*head)->prev = newNode;
-        *head = newNode;
-        return;
+    // যদি position 1 হয় বা লিস্ট ফাঁকা হয়
+    if (position == 1 || head == NULL) {
+        newNode->next = head;
+        if (head != NULL)
+            head->prev = newNode;
+        head = newNode;
+        return head;
     }
 
-    struct Node* temp = *head;
-    int count = 1;
-
-    // position-1 পর্যন্ত চলে যাওয়া
-    while (temp != NULL && count < position - 1) {
+    struct Node* temp = head;
+    for (int i = 1; i < position - 1; i++) {
+        if (temp->next == NULL) break; // যদি list এর শেষ আসে
         temp = temp->next;
-        count++;
-    }
-
-    // যদি position list এর চেয়ে বেশি হয়
-    if (temp == NULL) {
-        printf("Invalid position!\n");
-        free(newNode);
-        return;
     }
 
     newNode->next = temp->next;
@@ -53,9 +43,11 @@ void insertAtPosition(struct Node** head, int value, int position) {
         temp->next->prev = newNode;
 
     temp->next = newNode;
+
+    return head;
 }
 
-// List print করার ফাংশন
+// Doubly Linked List print করার ফাংশন
 void printList(struct Node* head) {
     struct Node* temp = head;
     printf("Doubly Linked List: ");
@@ -68,19 +60,31 @@ void printList(struct Node* head) {
 
 int main() {
     struct Node* head = NULL;
-    int n, value, position;
+    int n, value, pos;
 
     printf("কতগুলো node insert করতে চাও? ");
     scanf("%d", &n);
 
-    for (int i = 0; i < n; i++) {
-        printf("Value for node %d: ", i + 1);
+    // প্রথম n node insert করা
+    for (int i = 1; i <= n; i++) {
+        printf("Enter value for node %d: ", i);
         scanf("%d", &value);
-        printf("Position to insert: ");
-        scanf("%d", &position);
-        insertAtPosition(&head, value, position);
-        printList(head);
+        head = insertAtPosition(head, i, value);
     }
+
+    printf("\nCurrent Doubly Linked List: ");
+    printList(head);
+
+    // নতুন node insert করা
+    printf("\nEnter position to insert a new node: ");
+    scanf("%d", &pos);
+    printf("Enter value for the new node: ");
+    scanf("%d", &value);
+
+    head = insertAtPosition(head, pos, value);
+
+    printf("\nUpdated Doubly Linked List: ");
+    printList(head);
 
     return 0;
 }
