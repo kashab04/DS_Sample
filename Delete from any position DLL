@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+
+struct Node* head = NULL;
+
+// লিস্ট দেখানোর ফাংশন
+void display() {
+    struct Node* temp = head;
+    printf("\nDoubly Linked List: ");
+    while (temp != NULL) {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Delete From Any Position
+void deleteFromPosition(int pos) {
+    if (head == NULL) {
+        printf("\nList is empty! Nothing to delete.\n");
+        return;
+    }
+
+    struct Node* temp = head;
+    int count = 1;
+
+    // যদি প্রথম নোড ডিলেট করতে হয়
+    if (pos == 1) {
+        head = head->next;
+        if (head != NULL)
+            head->prev = NULL;
+        printf("\nDeleted node: %d\n", temp->data);
+        free(temp);
+        return;
+    }
+
+    // নির্দিষ্ট পজিশনে যাওয়া
+    while (temp != NULL && count < pos) {
+        temp = temp->next;
+        count++;
+    }
+
+    // যদি পজিশন লিস্টের বাইরে হয়
+    if (temp == NULL) {
+        printf("\nInvalid position!\n");
+        return;
+    }
+
+    // ডিলেট করা
+    if (temp->next != NULL)
+        temp->next->prev = temp->prev;
+
+    if (temp->prev != NULL)
+        temp->prev->next = temp->next;
+
+    printf("\nDeleted node: %d\n", temp->data);
+    free(temp);
+}
+
+// মেইন ফাংশন
+int main() {
+    int n, val, pos;
+    struct Node *temp, *newnode;
+
+    printf("How many nodes initially? ");
+    scanf("%d", &n);
+
+    // লিস্ট তৈরি
+    for (int i = 1; i <= n; i++) {
+        printf("Enter value for node %d: ", i);
+        scanf("%d", &val);
+
+        newnode = (struct Node*)malloc(sizeof(struct Node));
+        newnode->data = val;
+        newnode->prev = NULL;
+        newnode->next = NULL;
+
+        if (head == NULL) {
+            head = newnode;
+            temp = head;
+        } else {
+            temp->next = newnode;
+            newnode->prev = temp;
+            temp = newnode;
+        }
+    }
+
+    printf("\nOriginal List:\n");
+    display();
+
+    printf("\nEnter position to delete: ");
+    scanf("%d", &pos);
+
+    deleteFromPosition(pos);
+
+    printf("\nAfter Deletion:\n");
+    display();
+
+    return 0;
+}
